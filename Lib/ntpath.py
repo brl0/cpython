@@ -104,7 +104,7 @@ def isabs(s):
 
 
 # Join two (or more) paths.
-def join(path, *paths):
+def join(path, *parts):
     path = os.fspath(path)
     if isinstance(path, bytes):
         sep = b'\\'
@@ -115,10 +115,10 @@ def join(path, *paths):
         seps = '\\/'
         colon = ':'
     try:
-        if not paths:
+        if not parts:
             path[:0] + sep  #23780: Ensure compatible data type even if p is null.
         result_drive, result_root, result_path = splitroot(path)
-        for p in map(os.fspath, paths):
+        for p in map(os.fspath, parts):
             p_drive, p_root, p_path = splitroot(p)
             if p_root:
                 # Second path is absolute
@@ -146,7 +146,7 @@ def join(path, *paths):
             return result_drive + sep + result_path
         return result_drive + result_root + result_path
     except (TypeError, AttributeError, BytesWarning):
-        genericpath._check_arg_types('join', path, *paths)
+        genericpath._check_arg_types('join', path, *parts)
         raise
 
 
